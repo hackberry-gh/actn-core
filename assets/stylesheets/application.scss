@@ -1,0 +1,237 @@
+@import "fontawesome/scss/font-awesome";
+
+@font-face {
+    font-family: 'source_sans';
+    src: url('sourcesanspro-regular-webfont.eot');
+    src: url('sourcesanspro-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('sourcesanspro-regular-webfont.woff2') format('woff2'),
+         url('sourcesanspro-regular-webfont.woff') format('woff'),
+         url('sourcesanspro-regular-webfont.ttf') format('truetype'),
+         url('sourcesanspro-regular-webfont.svg#source_sans_proregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'source_sans';
+    src: url('sourcesanspro-semibold-webfont.eot');
+    src: url('sourcesanspro-semibold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('sourcesanspro-semibold-webfont.woff2') format('woff2'),
+         url('sourcesanspro-semibold-webfont.woff') format('woff'),
+         url('sourcesanspro-semibold-webfont.ttf') format('truetype'),
+         url('sourcesanspro-semibold-webfont.svg#source_sans_prosemibold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@mixin shrink {
+  margin:0;
+  padding:0;
+  border:none;
+  width:100%;
+  height:100%;
+}
+
+.shrink{
+  @include shrink;
+  position:relative;
+}
+
+$font-family:"source_sans";
+$logo-size:36px;
+
+@import "basscss";
+
+html, body, #main, .page, .flex-container, .flex{
+  height:100%;
+  overflow:hidden;
+  position:relative;
+}
+ 
+.display-flex{
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -moz-flex;
+  display: -webkit-flex;
+  display: flex;
+} 
+
+.flex-container{
+  @extend .display-flex;
+}
+
+.flex-center{
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+}
+
+.flex-left{
+  -webkit-justify-content: flex-start;
+  justify-content: flex-start;
+  align-items:left;
+}
+
+.flex-20 {
+  -webkit-flex: 20 0 0; 
+  flex: 20 0 0;   
+}
+.flex-5 {
+  -webkit-flex: 5 0 0; 
+  flex: 5 0 0;   
+}
+.flex-2 {
+  -webkit-flex: 2 0 0; 
+  flex: 2 0 0;    
+}
+.flex-1 {
+  -webkit-flex: 1 0 0;
+  flex: 1 0 0;
+}
+.max-288{
+  max-width: 288px;
+}
+.fix-96{
+  max-width: 96px;
+  min-width: 96px;
+}
+.mb5{
+  margin-bottom:5rem;
+}
+.logo{
+  text-align:center;
+  line-height:$logo-size;
+  border-radius: $logo-size;
+  width:$logo-size;
+  height:$logo-size;
+  background-clip: padding-box;
+  font-size:11px;
+  display:inline-block;
+  position:relative;
+  top: -8px;
+}
+
+.sidebar-nav a{
+  @extend .button;
+  @extend.button-nav-light;
+  @extend .p2;  
+//  color: rgba(0, 0, 0, .5);
+}
+
+.overflow-auto{
+  overflow:auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.flash-container{
+  position: fixed !important;
+  width: 100% !important;
+}
+.flash{
+  @extend .bold; 
+  @extend .p2; 
+  @extend .bg-white;
+  @extend .dark-gray;
+  @extend .rounded;
+  @extend .clearfix;  
+  @extend .mr1;
+  @extend .mt1;  
+  a{
+    @extend .right;
+    cursor: pointer;
+  }
+  @extend .border;  
+}
+
+.hidden{
+  @extend .hide;
+}
+
+.code{
+  outline:none;
+  resize: none;  
+  font-family: 'Source Code Pro', Consolas, monospace;
+  border: none;
+  &:focus{border: none;}
+  &[disabled]{
+  @extend .field-light;
+  border: none;  
+  }
+  margin-bottom:3.5rem;
+}
+
+.error-msg{
+  margin-top:-1rem;
+}
+
+.st_per_page{
+  @extend .field-dark;
+  @extend .ml1;
+}
+
+
+.td-content{
+  max-height:1rem;
+  line-height: 1rem;
+  overflow:hidden;
+  display:inline-block;
+  max-width: 100%;
+  word-wrap: break-word;
+  word-break: break-word;
+  cursor: pointer;
+}
+.table-light th{
+  white-space: nowrap;
+}
+
+.st_pagination{
+  @extend .center;
+  @extend .mb2;  
+
+  ul.pagination{
+    @extend .mb4;
+    @extend .list-reset;
+    @extend .inline-block; 
+    @extend .overflow-hidden;
+    @extend .border;
+    @extend .rounded;
+    li{
+      @extend .left;
+      a{
+      @extend .button; 
+      @extend .button-nav-light;
+      @extend .border-right;
+      &.active{
+        @extend .dark-gray;
+      }
+      }
+    }
+    li:last-child{
+      @extend .right; 
+    };
+  }
+}
+
+
+::-webkit-scrollbar
+{
+  width: 0.5rem;  /* for vertical scrollbars */
+  height: 0.5rem; /* for horizontal scrollbars */
+}
+
+::-webkit-scrollbar-track
+{
+  //background: rgba(0, 0, 0, 0.1);
+  @extend .bg-darken-1;
+  @extend .rounded;
+//  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+}
+
+::-webkit-scrollbar-thumb
+{
+//  background: rgba(0, 0, 0, 0.3);
+  @extend .bg-darken-4;
+  @extend .rounded;
+//   -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}

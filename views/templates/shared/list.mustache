@@ -1,0 +1,9 @@
+<ul class="list list-reset mt4">
+  <li class="px2"><h4 class="m0"><span class="caps">{{name}}</span> <span class="inline-block button-small white bg-yellow rounded">{{models.length}}</span></h4></li>
+  <li class="px2 py3 myn3 border-bottom"><a class="new h4 button border" href="/{{name}}/new">Create New</a></li>
+  {{#models}}
+  <li>
+    <a href="/{{collection.name}}/{{attributes.uuid}}/edit" class="{{attributes.uuid}} block button button-nav-light p2 border-bottom">{{attributes.name}}</a>
+  </li>
+  {{/models}}
+</ul>

@@ -1,0 +1,46 @@
+#!/usr/bin/env ruby
+# $LOAD_PATH.unshift File.expand_path(Actn::Api.gem_root)
+
+$stdout.sync = true
+$stderr.sync = true
+
+ENV['DATABASE_URL'] ||= "postgres://localhost:5432/actn_#{ENV['RACK_ENV'] ||= "development"}"
+
+abort unless api_name = ARGV.shift
+
+require 'i18n'
+require "active_support/inflector"
+
+require "goliath/api"
+require "goliath/runner"
+
+I18n.enforce_available_locales = false
+
+if api_name == "console"
+  require "actn/api"  
+  require "actn/api/cors"    
+  require "actn/db"
+  require "actn/jobs"  
+  require "#{Actn::Api.gem_root}/config/common.rb"
+  ARGV << "-c"
+  ARGV << "#{Actn::Api.gem_root}/config/common.rb"    
+  ARGV << "-C"
+  class Console < Actn::Api::Cors; end  
+  api_class = Console
+else
+  require "actn/api"  
+  ARGV << "-c"
+  if File.exists?("#{Actn::Api.root}/config/#{api_name.split("/").first}.rb")
+    ARGV << "#{Actn::Api.root}/config/#{api_name.split("/").first}.rb"
+  else
+    ARGV << "#{Actn::Api.gem_root}/config/common.rb"      
+  end
+  require "#{Actn::Api.root}/apis/#{api_name}"
+  api_class = api_name.classify.demodulize.constantize    
+end
+
+runner = Goliath::Runner.new(ARGV, nil)
+
+runner.api = api_class.new
+runner.app = Goliath::Rack::Builder.build(api_class, runner.api)
+runner.run
