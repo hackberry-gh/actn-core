@@ -1,1 +1,0 @@
-require "actn/hooks/trace"
