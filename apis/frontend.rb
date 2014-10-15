@@ -10,7 +10,7 @@ class Frontend < Actn::Api::Core
   if ENV['RACK_ENV'] == "development"
     use Goliath::Rack::Sprockets, asset_paths: ["assets/javascripts", "assets/stylesheets", "assets/webfonts"]
   else  
-    use Rack::Static, :root => "#{Actn::Api.root}/public", :urls => ['favicon.ico /assets']
+    use Rack::Static, :root => "#{Actn::Api.root}/public", :urls => ['favicon.ico','/assets']
   end
       
   helpers do
