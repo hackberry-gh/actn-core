@@ -17,7 +17,7 @@ module Actn
       def setup
         @model = Actn::DB::Model.create(name: "papa")
         
-        @api_options = { :verbose => true, :log_stdout => true, config: "#{Actn::Api.gem_root}/config/core.rb" }
+        @api_options = { :verbose => true, :log_stdout => true, config: "#{Actn::Api.gem_root}/config/common.rb" }
         @err = Proc.new { assert false, "API request failed" }
     
         @client = Client.create({domain: "localhost:9900"})

@@ -15,14 +15,14 @@ module Actn
       
       def setup
         
-        @api_options = { :verbose => true, :log_stdout => true, config: "#{Actn::Api.gem_root}/config/core.rb" }
+        @api_options = { :verbose => true, :log_stdout => true, config: "#{Actn::Api.gem_root}/config/common.rb" }
         @err = Proc.new { assert false, "API request failed" }
       end
 
       def test_front_api
         with_api(Frontend,@api_options) do
           get_request({path: '/' }, @err) do |c|
-            assert_equal 200, c.response_header.status
+            assert_equal 302, c.response_header.status
           end
         end
       end
