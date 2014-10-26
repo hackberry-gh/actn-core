@@ -20,7 +20,10 @@ class Frontend < Actn::Api::Core
     end
     
     def signin
+      env.logger.info "SIGNIN - DATA USER #{data['user']}"
       session[:user_uuid] = User.find_for_auth(data['user'])
+      env.logger.info "SIGNIN - SESSION #{session[:user_uuid]}"
+      session[:user_uuid]
     end
     
     def signout
