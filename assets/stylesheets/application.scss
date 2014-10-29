@@ -137,15 +137,20 @@ html, body, #main, .page, .flex-container, .flex{
   @extend .clearfix;  
   @extend .mr1;
   @extend .mt1;  
-  a{
+  a.close{
     @extend .right;
     cursor: pointer;
   }
   @extend .border;  
+  word-wrap: break-word;
+  word-break: break-word;  
+  max-height: 90%;
+  overflow: auto;
 }
 
 .hidden{
-  @extend .hide;
+  //@extend .hide;
+  display:none;
 }
 
 .code{
@@ -155,11 +160,25 @@ html, body, #main, .page, .flex-container, .flex{
   border: none;
   &:focus{border: none;}
   &[disabled]{
-  @extend .field-light;
-  border: none;  
+    @extend .field-light;
+    border: none;  
+    background-color: #fff !important;
   }
   margin-bottom:3.5rem;
 }
+
+.tabs.dark{
+  border-bottom-color: rgba(0, 0, 0, 0.25);
+  a{
+    border-bottom-color: rgba(0, 0, 0, 0.25);
+  }
+  a.is-active{
+    background-color: rgba(0, 0, 0, 0.25);
+    border-color: rgba(0, 0, 0, 0.25);
+    border-bottom: none;
+  }
+}
+
 
 .error-msg{
   margin-top:-1rem;

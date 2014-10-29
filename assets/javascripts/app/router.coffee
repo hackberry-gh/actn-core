@@ -4,6 +4,7 @@ Router = Backbone.Router.extend(
     "signin":                 "signin"
     "signout":                "signout"
     "live":                   "live"
+    "search":                 "search"    
     ":collection":            "index"
     ":collection/new":        "new"
     ":collection/:uuid/edit": "edit"
@@ -21,7 +22,12 @@ Router = Backbone.Router.extend(
   live: ->
     app.activeMeniItems = ["live", null]    
     app.view?.remove()
-    app.view = render "Live", id: "live", partials: ["nav","table"]     
+    app.view = render "Live", id: "live", partials: ["nav","table"]   
+  
+  search: ->
+    app.activeMeniItems = ["search", null]    
+    app.view?.remove()
+    app.view = render "Search", id: "search", partials: ["nav","table"]    
     
   index: (cid) ->  
     renderList(cid)
@@ -49,7 +55,8 @@ Router = Backbone.Router.extend(
     app.view?.list?.form?.remove()    
     renderList(cid) unless app.view?.list?
     app.activeMeniItems = [cid, uuid or "new"]
-    app.view.list.form = render "Form", collection: app.collections[cid], model: new app.models[cid.classify().toString()](uuid: uuid)
+    formOrEditor = if cid is "templates" then "Editor" else "Form"
+    app.view.list.form = render formOrEditor , collection: app.collections[cid], model: new app.models[cid.classify().toString()](uuid: uuid)
       
   render = (view, options) ->
     view = new app.views[view](options)

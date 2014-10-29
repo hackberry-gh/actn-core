@@ -13,14 +13,14 @@ class Template extends Backbone.Model
   validate: (attrs, options) ->
     app.jjv.validate(Template.schema,attrs) 
   
-  code: ->
+  meta: ->
     if @get("uuid")
-      JSON.stringify(@pick('filename','body'),null,2)
+      JSON.stringify(@pick('filename','layout','data_bind'),null,2)
     else  
-      JSON.stringify(_.omit(Template?.schema?.properties,'uuid'),null,2)
+      JSON.stringify(_.omit(Template?.schema?.properties,'uuid','body'),null,2)
     
   toJSON: (options) ->
     json = super
-    _.pick(json,'uuid','filename','body')
+    _.pick(json,'uuid','filename','body','layout','data_bind')
   
 app.models.Template = Template

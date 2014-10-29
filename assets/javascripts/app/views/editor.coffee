@@ -1,4 +1,5 @@
-class Form extends Backbone.View
+#= require ./form
+class Editor extends app.views.Form
   
   className: "flex flex-5"
   
@@ -30,9 +31,10 @@ class Form extends Backbone.View
     "click .destroy": "destroy"
     "click .error-close": "closeError"
     "keydown textarea": "onKeyDown"
+    "click .tabs a" : "toggleSource"
   
   template: (data, partials = {}) ->
-    app.getTemplate("form")(data, partials)
+    app.getTemplate("editor")(data, partials)
   
   render: () ->
     @$el.html @template(@model)
@@ -41,8 +43,8 @@ class Form extends Backbone.View
     @$container.remove @className
     @$container.append @$el
 
-    @editor = new Behave(
-      textarea: @$el.find(".code")[0],
+    @editorCode = new Behave(
+      textarea: @$el.find("textarea[name=meta]")[0],
       replaceTab: true
       softTabs: true
       tabSize: 2
@@ -52,8 +54,21 @@ class Form extends Backbone.View
       autoIndent: true
       fence: true
     )
-    @$el.find(".code").autosize()
-    @$el.find(".code").trigger('autosize.resize')
+    
+    @editorBody = new Behave(
+      textarea: @$el.find("textarea[name=body]")[0],
+      replaceTab: true
+      softTabs: true
+      tabSize: 2
+      autoOpen: true
+      overwrite: true
+      autoStrip: true
+      autoIndent: true
+      fence: true
+    )
+    
+    @$el.find("textarea.code").autosize()
+    @$el.find("textarea.code").trigger('autosize.resize')    
     
     app.postRender()
     @delegateEvents()
@@ -65,6 +80,7 @@ class Form extends Backbone.View
     @
     
   edit: () ->
+    @$el.find(".tabs").addClass("dark")
     @$el.find(".save").toggleClass('hidden')
     @$el.find(".edit").toggleClass('hidden')
     @$el.find("form").toggleClass("bg-dark-gray")
@@ -80,13 +96,14 @@ class Form extends Backbone.View
     
   save: ->
     try
-      params = JSON.parse(@$el.find("textarea").val())
+      params = JSON.parse(@$el.find("textarea[name=meta]").val())
+      params['body'] = @$el.find("textarea[name=body]").val()
     catch error
       return app.flash "Malformed JSON: #{error}", "bg-red white"
       
     if typeof(params) is "string"
       return app.flash "Malformed JSON", "bg-red white"
-      
+
     props = {wait: true , error: onError}
     if @model.isNew()  
       _.extend(props,{success: onSave})
@@ -95,36 +112,18 @@ class Form extends Backbone.View
     @model.save(params, props)
     @
     
-  destroy: ->   
-    if confirm("Are you sure to destroy")
-      @model.destroy() 
-      @collection.remove @model
-    @  
-    
-  closeError: ->
-    @$el.find(".errors").addClass("hidden")
-    @
-    
-  onKeyDown: (e) ->
-    if (e.ctrlKey or e.metaKey) and e.keyCode is 83
-      e.preventDefault()
-      @save()
-    @
-    
-  ##
-  # private
-  
-  onSave = (model) -> 
-    app.router.navigate("#{app.view.list.collection.name}/#{model.get('uuid')}/edit",{silent: true})
-    app.view.list.collection.add(model,{merge: true})
-    app.flash "Saved!", "bg-green white", 2
-  
-  onError = (model, response, options) ->  
-    errors = response.responseJSON
-    messages = []
-    for field of errors
-      messages.push "#{field} #{errors[field].join(',')}"
-    app.flash messages.join("<br/>"), "bg-red white"
+
+  toggleSource: (e) ->
+    e.preventDefault()    
+    $a = $(e.currentTarget)
+    current = $a.attr("ref")    
+    @$el.find('textarea').addClass('hidden')
+    @$el.find("textarea[name=#{current}]").removeClass("hidden")
+    @$el.find(".tabs a").removeClass("is-active")
+    $a.addClass("is-active")
+    @$el.find("textarea.code").trigger('autosize.resize')        
+
+
     
     
-app.views.Form = Form
+app.views.Editor = Editor

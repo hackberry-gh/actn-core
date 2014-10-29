@@ -32,11 +32,12 @@ end
 # User.create(first_name: "onur", last_name: "uyar", email: "me@onuruyar.com", password: "password", password_confirmation: "password")
 
 def bas
-sets=%W(supporters conductors pilots idiots)
+# sets=%W(supporters conductors pilots idiots)
+sets=%W(supporters)
 Dir.glob("#{Actn::Api.root}/test/json/*.json").each do |json|
   Oj.load(File.read(json)).each do |data|
     Actn::DB::Set[sets.sample].upsert(Oj.dump(data))
-    sleep (1..10).to_a.sample.to_f / 10.0
+    # sleep (1..10).to_a.sample.to_f / 10.0
   end
 end
 end

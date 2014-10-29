@@ -487,8 +487,8 @@
 
   _F.sort = function(options){
     options.order = options.dir == 'asc' ? 1 : -1;
-
-    return this.getIndex().sort(this._sortingFunc(this.data, options));
+    return this.getIndex().sort(this._sortingFunc(_.map(this.data,function(d){return d.data}), options));
+    // return this.getIndex().sort(this._sortingFunc(this.data, options));
   };
 
   _F._sortingFunc = function(data, options){

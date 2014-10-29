@@ -1,0 +1,25 @@
+<div class="flex-container flex-left">
+  {{> nav}}
+  
+  <div class="flex flex-5 overflow-auto">
+    
+    <div class="clearfix white bg-dark-gray full-width z4">
+
+      <div id="searcharea">
+        <textarea class="field-dark full-width mb0" placeholder="Search"></textarea>
+      </div>
+  
+      <div class="overflow-hidden px2 py1 form-items">
+        <input id="searchbox" type="text" class="mb0 left fit field-dark" placeholder="Filter">
+        <button class="inline-block button button-small rounded help bg-dark-gray border yellow ml1"><i class="fa fa-question"></i></a>
+        <button class="inline-block button button-small rounded bar-chart bg-dark-gray border white ml1"><i class="fa fa-bar-chart"></i></button>        
+        <span class="inline-block button button-small white bg-yellow h4 rounded record_count ml1">0 records</span>
+        <span class="filters"></span>
+      </div>
+
+  
+    </div>
+    
+  {{> table }}
+
+</div>

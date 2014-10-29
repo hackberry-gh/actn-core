@@ -7,6 +7,7 @@ class List extends Backbone.View
     @listenTo(@collection,'reset',@render)
     @listenTo(@collection,'remove',@render)
     @listenTo(@collection,'add',@render)
+    @listenTo(@collection,'change',@render)    
     @collection.fetch(data: @collection.query, reset: true)
   
   template: (data = {}, partials = []) ->

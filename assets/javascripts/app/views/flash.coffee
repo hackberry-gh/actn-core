@@ -1,6 +1,6 @@
 class Flash extends Backbone.View
   
-  className: "fixed flex-container flex-center z4 flash-container"
+  className: "fixed flex-container flex-center z4 flash-container bg-darken-4"
   
   events: 
     "click .close" : "remove"

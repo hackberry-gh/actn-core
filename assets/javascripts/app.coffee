@@ -8,7 +8,11 @@ Mustache.template = (temp) ->
 
         
 class App
-
+  
+  @YAML_INL: 124
+  
+  @YAML_IND: 2
+  
   $body: $("body")  
 
   @STANDARD_ERR: "Ops!, sorry something went wrong!"
@@ -65,7 +69,7 @@ class App
       when 401
         messages.push """You need to <a href="/signin">singin</a> before"""
       else
-        elems.push app.STANDARD_ERR
+        elems.push app.constructor.STANDARD_ERR
         console.log errors
     
     @flash elems.join('<br/>'), "red"    
@@ -86,7 +90,7 @@ class App
         $error = $errEl.clone().html( "Please check your email and password." )
         $error.insertAfter $form.find("input[type=email]").addClass("is-error")
       else
-        app.flash app.STANDARD_ERR, "bg-red white"
+        app.flash app.constructor.STANDARD_ERR, "bg-red white"
         console.log errors
     
   ##

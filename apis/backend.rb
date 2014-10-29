@@ -1,14 +1,26 @@
 require 'actn/api/core'
+require 'em-synchrony/fiber_iterator'
  
 class Backend < Actn::Api::Core
   
   use Rack::Static, :root => "#{Actn::Api.root}/public", :urls => ['favicon.ico']    
   use Goliath::Rack::BarrierAroundwareFactory, Actn::Api::Mw::Auth, with_session: true
+  
+  EMPTY_ARRAY = "[]".freeze
+  LIMIT = 50.freeze
+  
+  # PING='{"ping":1}'.freeze
+  # STREAM_CLOSE='{"stream":"close"}'.freeze
+  
+  # STATUSES = {
+  #   keepalive: Oj.dump({status: 0}),
+  #   closed: Oj.dump({status: -1})
+  # }.freeze
           
   helpers do
     
     def set
-      env['set'] ||= Actn::DB::Set.new(:core, params[:set])
+      env['set'] ||= Actn::DB::Set.new(table_schema, params[:set])
     end
     
     def model
@@ -17,6 +29,10 @@ class Backend < Actn::Api::Core
     
     def name
       env['name'] ||= params[:set].singularize
+    end
+    
+    def table_schema
+      env['table_schema'] ||= (query['table_schema'] || :core)
     end
     
     def criteria
@@ -30,7 +46,7 @@ class Backend < Actn::Api::Core
     end
   
     def limit
-      50
+      LIMIT
     end
   
     def page
@@ -64,6 +80,42 @@ class Backend < Actn::Api::Core
       params['data']
     end 
     
+    def stream criteria
+      
+      env['keepalive'] ||= EM.add_periodic_timer(1) do
+        push EMPTY_ARRAY
+      end
+
+      # just give clients a bit time to render/parse results before pushing next
+      EM.add_timer (0.1) do
+        
+        begin
+          # env.logger.info set.inspect_query(criteria)
+          resp = set.query(criteria)
+          if resp != EMPTY_ARRAY
+            push resp
+            query['page'] += 1
+            criteria['offset'] = offset
+            stream criteria
+          else  
+            env['keepalive'].cancel
+            env.chunked_stream_close
+          end
+        rescue PG::Error => e
+          status 400
+          env['keepalive'].cancel
+          push Oj.dump({error: e.result.error_field( PG::Result::PG_DIAG_MESSAGE_PRIMARY )})
+          env.chunked_stream_close
+        end
+
+      end
+            
+    end
+    
+    def push msg
+      env.chunked_stream_send "#{msg}\n"
+    end
+    
   end
 
   before "*" do
@@ -72,34 +124,74 @@ class Backend < Actn::Api::Core
   end
 
   get "/:set" do
-    # puts criteria.inspect
-    set.query(criteria)
+    begin
+      # puts criteria.inspect
+      if query['stream']
+      
+        query['limit'] = limit
+        query['page'] = 1
+        stream criteria
+      
+        status 200
+        content_type 'text/plain'
+        header['X-Stream'] = 'Goliath'
+        header['Transfer-Encoding'] = 'chunked'
+      
+        Goliath::Response::STREAMING
+      
+      else
+        set.query(criteria)
+      end
+    rescue PG::Error => e
+      status 400
+      e.result.error_field( PG::Result::PG_DIAG_MESSAGE_PRIMARY )
+    end
   end
 
   get "/:set/:uuid" do
-    set.find(params[:uuid])
+    begin
+      set.find(params[:uuid])
+    rescue PG::Error => e
+      status 400
+      e.result.error_field( PG::Result::PG_DIAG_MESSAGE_PRIMARY )
+    end
   end  
 
   post "/:set" do
-    created = model.create(data)
-    if created.persisted?
-      created.to_json
-    else
-      status 406
-      created.errors.to_json
+    begin
+      created = model.create(data)
+      if created.persisted?
+        created.to_json
+      else
+        status 406
+        created.errors.to_json
+      end
+    rescue PG::Error => e
+      status 400
+      e.result.error_field( PG::Result::PG_DIAG_MESSAGE_PRIMARY )
     end
   end    
 
   put "/:set/:uuid" do
-    unless record.update(data)
-      status 406
-      record.errors.to_json      
-    else
-      record.to_json
+    begin
+      unless record.update(data)
+        status 406
+        record.errors.to_json      
+      else
+        record.to_json
+      end
+    rescue PG::Error => e
+      status 400
+      e.result.error_field( PG::Result::PG_DIAG_MESSAGE_PRIMARY )
     end
   end      
 
   delete "/:set/:uuid" do
-    record.destroy.to_json
+    begin
+      record.destroy.to_json
+    rescue PG::Error => e
+      status 400
+      e.result.error_field( PG::Result::PG_DIAG_MESSAGE_PRIMARY )
+    end
   end
 end

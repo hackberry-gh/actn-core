@@ -14,8 +14,18 @@ class Live extends app.views.Page
     "click .td-content" : "showContent"    
 
   
-  rowTemplate: (msg, index) ->
+  rowTemplate: (msg, index) =>
+    
+    for field in @st.opts.fields
+      if field.indexOf("data") > -1
+        _key = field.replace("data.","")
+        unless msg.data[_key]
+          msg.data[_key] ?= ""
+        # if _.isObject(msg.data[_key])
+        #   msg.data[_key] = JSON.stringify(msg.data[_key])
+    
     values = _.map(_.keys(msg.data).sort(),(k)->msg.data[k]) #_.values(msg.data)
+
     app.getTemplate("row")({index: index, msg: msg, values: values })
       
   start:  ->
@@ -55,6 +65,9 @@ class Live extends app.views.Page
                                    
     @$el.find('.table').stream_table(options, [])
     @st = @$el.find('.table').data('st')
+    @st.has_sorting = true
+    @st.records_index = []          
+    @st.sorting_opts = {}
     @$el.find(".st_per_page").insertAfter @$el.find("#searchbox")
     @createLabels()
     #@delegateEvents()
@@ -82,13 +95,13 @@ class Live extends app.views.Page
     # $(".flash").first().css({"left":"#{e.clientX}px","top":"#{e.clientY}px","z-index":$(".flash").length})
   
   updateCount: (msgs) =>
-    @$el.find(".count").text("#{parseInt(@$el.find(".count").text()) + msgs.length} records")
+    @$el.find(".record_count").text("#{parseInt(@$el.find(".record_count").text()) + msgs.length} records")
       
   updateFields: (msgs) =>
     unless _.isEmpty(msgs)
-      for msg in msgs
-        delete msg.data.created_at
-        delete msg.data.updated_at      
+      # for msg in msgs
+      #   delete msg.data.created_at
+      #   delete msg.data.updated_at
       #@table_names = _.union(_.uniq(_.pluck(msg,"table_name")),@table_names)
       fields = _.uniq(_.flatten(_.map(_.pluck(msgs,"data"),( (d) -> _.map(_.keys(d),(k)->"data.#{k}") ) )))
       unifields = _.union(@fields,fields) #@table_names  
@@ -101,7 +114,15 @@ class Live extends app.views.Page
   createTableHeader: () =>
     fields = @st.opts.fields.sort()
     fields.unshift("index","table_name")
-    @$el.find('.table thead tr').html _.map(fields,(f)->"""<th class="#{f.replace("data.","")}">#{f.replace("data.","").titleize()}</th>""")
+    @$el.find('.table thead tr').html _.map(fields,(f) => 
+      fname = f.replace("data.","")
+      if f.indexOf("data") > -1
+        sort_type = if _.isNumber(@buffer[0]['data'][fname]) then "number" else "string"
+        """<th class="#{fname}" data-sort="#{fname}:asc:#{sort_type}">#{fname.titleize()}</th>"""
+      else  
+        """<th class="#{fname}">#{fname.titleize()}</th>"""
+    )
+    @st.bindSortingEvents()  
   
   createLabels: =>
     filterBtns = @$el.find(".filters a")
@@ -125,6 +146,9 @@ class Live extends app.views.Page
     return unless msg.table_name?
       
     if msg.op is "INSERT"
+      for k,v of msg.data
+        if _.isObject(v)
+          msg.data[k] = JSON.stringify(v)
       @buffer.push msg
       # @st.addData [msg]
     else
