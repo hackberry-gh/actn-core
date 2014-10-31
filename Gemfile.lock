@@ -1,13 +1,6 @@
 GIT
-  remote: https://github.com/lemmycaution/goliath_rack_sprockets
-  revision: 4bc852a5fb08309a2c1dde85d9d8522b48bdff59
-  specs:
-    goliath_rack_sprockets (0.1.0)
-      goliath (~> 1.0.0)
-      sprockets (~> 2.12.2)
-
-PATH
-  remote: ../../lib/api
+  remote: https://github.com/hackberry-gh/actn-api
+  revision: fde2b08f930488863c63ca0a6fe0c4a57bfde06c
   specs:
     actn-api (0.0.7)
       goliath
@@ -16,8 +9,9 @@ PATH
       rack_csrf
       tilt
 
-PATH
-  remote: ../../lib/db
+GIT
+  remote: https://github.com/hackberry-gh/actn-db
+  revision: c5d02a297db828163caa640120f72d5b383b02e8
   specs:
     actn-db (0.0.6)
       activemodel
@@ -26,20 +20,29 @@ PATH
       em-pg-client
       oj
 
-PATH
-  remote: ../../lib/jobs
+GIT
+  remote: https://github.com/hackberry-gh/actn-jobs
+  revision: 94c3ec834de58c6d545500b5ff6d2d4b2705603f
   specs:
     actn-jobs (0.0.6)
       em-http-request
       websocket-eventmachine-client
 
+GIT
+  remote: https://github.com/lemmycaution/goliath_rack_sprockets
+  revision: 4bc852a5fb08309a2c1dde85d9d8522b48bdff59
+  specs:
+    goliath_rack_sprockets (0.1.0)
+      goliath (~> 1.0.0)
+      sprockets (~> 2.12.2)
+
 GEM
   remote: https://rubygems.org/
   specs:
-    activemodel (4.1.6)
-      activesupport (= 4.1.6)
+    activemodel (4.1.7)
+      activesupport (= 4.1.7)
       builder (~> 3.1)
-    activesupport (4.1.6)
+    activesupport (4.1.7)
       i18n (~> 0.6, >= 0.6.9)
       json (~> 1.7, >= 1.7.7)
       minitest (~> 5.1)
