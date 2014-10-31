@@ -1,5 +1,8 @@
 #= require ../../vendor/stream_table
 #= require ./live
+#= require ./d3/pie
+#= require ./d3/histogram
+#= require ./d3/bar
 
 class Search extends app.views.Live
   
@@ -8,7 +11,9 @@ class Search extends app.views.Live
     "click .td-content" : "showContent"
     "keydown #searcharea textarea": "onSearchAreaKeydown"
     "click .help" : "toggleHelp"
-    "click .bar-chart" : "openD3"
+    "click .d3" : "openChart"
+    "click .tbl" : "openTable"
+    "click .toggle-search": "toggleSearch"
   
   initialize: (@options=null) ->
     super
@@ -68,12 +73,13 @@ class Search extends app.views.Live
     # console.log e
     if (e.ctrlKey or e.metaKey) and e.keyCode is 83
       e.preventDefault()
-      @search(e.shiftKey)
+      @search(!e.shiftKey)
     @
   
   search: (reset=false) ->
     if query = @$el.find("#searcharea textarea").val()  
       if reset
+        @$el.find(".filters").html($("""<a class="filter h5 inline-block button button-small white bg-red rounded active ml1">table_name</a>"""))
         @$el.find('.table tbody').empty()
         @$el.find('.table thead').html("<tr>")      
         @$el.find(".record_count").text("0 records")
@@ -116,9 +122,23 @@ class Search extends app.views.Live
     
   toggleHelp: ->
     app.flash app.getTemplate('help')({}, [])
+    
+  toggleSearch: (e) ->
+    @$el.find("#searcharea").toggleClass("mt1").find("textarea").toggleClass("hidden")
+    $(e.currentTarget).find(".fa").toggleClass("fa-flip-vertical")
+    app.views.chart?.resize()
+    
+  openTable: ->
+    app.views.chart?.remove()    
+    @$el.find(".table, .st_pagination").removeClass("hidden")
   
-  openD3: ->
-    if @st.data? and not _.isEmpty(@st.data)
-      @d3 = new app.views.D3(data: @st.data)
+  openChart: (e) ->
+    e.preventDefault()
+    return if _.isEmpty(@st.data)
+    chart = $(e.currentTarget).data('chart')
+    app.views.chart?.remove()
+    app.views.chart = new app.views[chart](data: @st.data)
+    @$el.find(".table, .st_pagination").addClass("hidden")
+    @$el.find(".table-container").append(app.views.chart.$el)
         
 app.views.Search = Search

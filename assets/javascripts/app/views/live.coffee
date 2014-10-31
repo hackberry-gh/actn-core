@@ -118,7 +118,7 @@ class Live extends app.views.Page
       fname = f.replace("data.","")
       if f.indexOf("data") > -1
         sort_type = if _.isNumber(@buffer[0]['data'][fname]) then "number" else "string"
-        """<th class="#{fname}" data-sort="#{fname}:asc:#{sort_type}">#{fname.titleize()}</th>"""
+        """<th class="#{fname} pointer" data-sort="#{fname}:asc:#{sort_type}">#{fname.titleize()} <i class="fa fa-sort"></i></th>"""
       else  
         """<th class="#{fname}">#{fname.titleize()}</th>"""
     )
@@ -131,7 +131,7 @@ class Live extends app.views.Page
       filters = _.difference(@st.opts.fields,_.map(filters,(f)->"data.#{f}"))
     else
       filters = @st.opts.fields
-    @$el.find('.form-items .filters').append _.map(filters.sort(),(f)->"""<a class="filter h5 inline-block button button-small white bg-red rounded active ml1">#{f.replace("data.","")}</a>""")
+    @$el.find('.filters').append _.map(filters.sort(),(f)->"""<a class="filter h5 inline-block button button-small white bg-red rounded active ml1">#{f.replace("data.","")}</a>""")
     
     
   setBuffer: =>

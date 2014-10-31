@@ -1,39 +1,37 @@
 GIT
-  remote: https://github.com/hackberry-gh/actn-api
-  revision: b1ed7f3c768270a7bcc59a36b7384cab9ad28e91
-  specs:
-    actn-api (0.0.6)
-      goliath
-      helmet
-      oj
-      rack_csrf
-      tilt
-
-GIT
-  remote: https://github.com/hackberry-gh/actn-db
-  revision: a9643174cd511b6cfb5eafa9dba0979d0d68a2c2
-  specs:
-    actn-db (0.0.5)
-      activemodel
-      bcrypt
-      coffee-script
-      em-pg-client
-      oj
-
-GIT
-  remote: https://github.com/hackberry-gh/actn-jobs
-  revision: c2f8e0c4f8c9a662823b81081c3da076245c4637
-  specs:
-    actn-jobs (0.0.5)
-      websocket-eventmachine-client
-
-GIT
   remote: https://github.com/lemmycaution/goliath_rack_sprockets
   revision: 4bc852a5fb08309a2c1dde85d9d8522b48bdff59
   specs:
     goliath_rack_sprockets (0.1.0)
       goliath (~> 1.0.0)
       sprockets (~> 2.12.2)
+
+PATH
+  remote: ../../lib/api
+  specs:
+    actn-api (0.0.7)
+      goliath
+      helmet
+      oj
+      rack_csrf
+      tilt
+
+PATH
+  remote: ../../lib/db
+  specs:
+    actn-db (0.0.6)
+      activemodel
+      bcrypt
+      coffee-script
+      em-pg-client
+      oj
+
+PATH
+  remote: ../../lib/jobs
+  specs:
+    actn-jobs (0.0.6)
+      em-http-request
+      websocket-eventmachine-client
 
 GEM
   remote: https://rubygems.org/
@@ -121,6 +119,9 @@ GEM
     tilt (1.4.1)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
+    uglifier (2.5.3)
+      execjs (>= 0.3.0)
+      json (>= 1.8.0)
     url_mount (0.2.1)
       rack
     websocket (1.2.1)
@@ -133,6 +134,7 @@ GEM
     websocket-eventmachine-server (1.0.1)
       websocket-eventmachine-base (~> 1.0)
     websocket-native (1.0.0)
+    yui-compressor (0.12.0)
 
 PLATFORMS
   ruby
@@ -147,4 +149,6 @@ DEPENDENCIES
   minitest
   rake
   sass (~> 3.1)
+  uglifier
   websocket-eventmachine-server
+  yui-compressor

@@ -3,27 +3,6 @@ class Editor extends app.views.Form
   
   className: "flex flex-5"
   
-  initialize: (@options=null) ->
-    super
-    @listenTo(@model,'change',@render)
-    @listenTo(@model,'destroy',@close)    
-    @listenTo(@model,'invalid',@showValidationErrors)        
-    
-    app.api.get(
-      "/api/models",
-      {select: ["schema"], where:{name: @model.constructor.name},limit:1},
-      null,
-      (data) =>
-        
-        @model.constructor.schema=data[0].schema
-        
-        if @model.get("uuid")?
-          @model.fetch()
-        else  
-          @render()  
-          @edit()
-    )
-  
   events: 
     "click .close": "close"
     "click .edit": "edit"
@@ -74,44 +53,18 @@ class Editor extends app.views.Form
     @delegateEvents()
     @
     
-  close: () ->
-    @remove()
-    app.router.navigate(@collection.name,{silent: true})
-    @
-    
-  edit: () ->
-    @$el.find(".tabs").addClass("dark")
-    @$el.find(".save").toggleClass('hidden')
-    @$el.find(".edit").toggleClass('hidden')
-    @$el.find("form").toggleClass("bg-dark-gray")
-    @$el.find("textarea").removeAttr("disabled")
-    @
-    
-  showValidationErrors: (model, errors) ->
-    error_list = []
-    for field, error of errors.validation
-      error_list.push "#{field} #{JSON.stringify(error)}"
-    app.flash error_list.join("<br/><br/>"), "bg-red white"
-    @
-    
   save: ->
-    try
-      params = JSON.parse(@$el.find("textarea[name=meta]").val())
-      params['body'] = @$el.find("textarea[name=body]").val()
-    catch error
-      return app.flash "Malformed JSON: #{error}", "bg-red white"
-      
-    if typeof(params) is "string"
-      return app.flash "Malformed JSON", "bg-red white"
-
-    props = {wait: true , error: onError}
-    if @model.isNew()  
-      _.extend(props,{success: onSave})
-    else
-      _.extend(props,{silent: true})           
-    @model.save(params, props)
-    @
-    
+   try
+     params = JSON.parse(@$el.find("textarea[name=meta]").val())
+     params['body'] =  @$el.find("textarea[name=body]").val()
+   catch error
+     return app.flash "Malformed JSON: #{error}", "bg-red white"
+     
+   if typeof(params) is "string"
+     return app.flash "Malformed JSON", "bg-red white"
+     
+   @model.save(params, {wait: true, success: onSave, error: onError})
+   @
 
   toggleSource: (e) ->
     e.preventDefault()    
@@ -123,7 +76,20 @@ class Editor extends app.views.Form
     $a.addClass("is-active")
     @$el.find("textarea.code").trigger('autosize.resize')        
 
+  ##
+  # private
+  
+  onSave = (model) -> 
+    app.router.navigate("#{app.view.list.collection.name}/#{model.get('uuid')}/edit",{silent: true})
+    app.view.list.collection.add(model,{merge: true})
+    app.flash "Saved!", "bg-green white", 2
+  
+  onError = (model, response, options) ->  
+    errors = response.responseJSON
+    messages = []
+    for field of errors
+      messages.push "#{field} #{JSON.stringify(errors[field],null,2)}"
+    app.flash "<pre class=\"bg-red white\">#{messages.join("\n")}</pre>", "bg-red white"
 
-    
     
 app.views.Editor = Editor

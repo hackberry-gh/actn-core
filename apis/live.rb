@@ -8,7 +8,7 @@ class Live < Goliath::WebSocket
   use Rack::Static, :root => "#{Actn::Api.root}/public", :urls => ['favicon.ico']
     
   def on_open(env)
-    # env.logger.debug("WS OPEN")
+    env.logger.debug("WS OPEN")
     env['keepalive'] = EM.add_periodic_timer(10) do
       env.channel << '{"ping":1}'
     end
@@ -16,12 +16,12 @@ class Live < Goliath::WebSocket
   end
 
   def on_message(env, msg)
-    # env.logger.debug("WS MESSAGE: #{msg}")
+    env.logger.debug("WS MESSAGE: #{msg}")
     env.channel << msg
   end
 
   def on_close(env)
-    # env.logger.debug("WS CLOSED")
+    env.logger.debug("WS CLOSED")
     env['keepalive'].cancel if env['keepalive']    
     env.channel.unsubscribe(env['subscription'])
   end

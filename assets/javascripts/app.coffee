@@ -97,6 +97,9 @@ class App
   # private
     
   delegateEventHandlers = ->
+    $("[data-disclosure]").click (e) ->
+      e.stopPropagation()
+      $(e.currentTarget).toggleClass("is-active")
       
     $("a[data-method]").click (e) ->      
       e.preventDefault()

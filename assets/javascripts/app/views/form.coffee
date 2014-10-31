@@ -74,8 +74,8 @@ class Form extends Backbone.View
   showValidationErrors: (model, errors) ->
     error_list = []
     for field, error of errors.validation
-      error_list.push "#{field} #{JSON.stringify(error)}"
-    app.flash error_list.join("<br/><br/>"), "bg-red white"
+      error_list.push "#{field} #{JSON.stringify(error,null,2)}"
+    app.flash "<pre class=\"bg-red white\">#{error_list.join("\n")}</pre>", "bg-red white"
     @
     
   save: ->
@@ -87,12 +87,7 @@ class Form extends Backbone.View
     if typeof(params) is "string"
       return app.flash "Malformed JSON", "bg-red white"
       
-    props = {wait: true , error: onError}
-    if @model.isNew()  
-      _.extend(props,{success: onSave})
-    else
-      _.extend(props,{silent: true})           
-    @model.save(params, props)
+    @model.save(params, {wait: true, success: onSave, error: onError})
     @
     
   destroy: ->   
@@ -123,8 +118,8 @@ class Form extends Backbone.View
     errors = response.responseJSON
     messages = []
     for field of errors
-      messages.push "#{field} #{errors[field].join(',')}"
-    app.flash messages.join("<br/>"), "bg-red white"
+      messages.push "#{field} #{JSON.stringify(errors[field],null,2)}"
+    app.flash "<pre class=\"bg-red white\">#{messages.join("\n")}</pre>", "bg-red white"
     
     
 app.views.Form = Form
