@@ -24,7 +24,7 @@ load "actn/jobs/tasks/jobs.rake"
   env.append_path("assets/stylesheets")
   env.append_path("assets")    
 
-  env.js_compressor = Sprockets::UglifierCompressor
+  # env.js_compressor = Sprockets::UglifierCompressor
   env.css_compressor = Sprockets::YUICompressor
 end
     
