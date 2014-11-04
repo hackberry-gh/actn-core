@@ -159,6 +159,19 @@ html, body, #main, .page, .flex-container, .flex{
 .button-nav-dark{
   @extend .mid-gray;
 }
+.form-container{
+  display: flex;   
+  flex-flow: column;
+  height:100%;
+  form{
+    flex:20 20 0;
+    display:flex;
+  }
+  .code{
+    margin-bottom:0;
+  }
+}
+
 .code{
   outline:none;
   resize: none;  
@@ -170,7 +183,7 @@ html, body, #main, .page, .flex-container, .flex{
     border: none;  
     background-color: #fff !important;
   }
-  margin-bottom:3.5rem;
+//  margin-bottom:3.5rem;
   @extend .light-gray;
 }
 

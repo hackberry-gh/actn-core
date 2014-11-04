@@ -7,7 +7,7 @@ class Frontend < Actn::Api::Core
   settings[:public_folder]  = "#{Actn::Api.root}/public"
   settings[:views_folder]   = "#{Actn::Api.root}/views"        
   
-  if Goliath.env == "development"
+  if Goliath.env == :development
     use Goliath::Rack::Sprockets, asset_paths: ["assets/javascripts", "assets/stylesheets", "assets/webfonts"]
   else  
     use Rack::Static, :root => "#{Actn::Api.root}/public", :urls => ['favicon.ico','/assets']

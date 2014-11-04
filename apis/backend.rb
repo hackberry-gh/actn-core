@@ -174,10 +174,12 @@ class Backend < Actn::Api::Core
 
   put "/:set/:uuid" do
     begin
+      puts "UPDATING DATA #{data}"
       unless record.update(data)
         status 406
         record.errors.to_json      
       else
+        puts "UPDATED RECORD #{record.inspect}"
         record.to_json
       end
     rescue PG::Error => e

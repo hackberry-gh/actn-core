@@ -46,8 +46,8 @@ class Editor extends app.views.Form
       fence: true
     )
     
-    @$el.find("textarea.code").autosize()
-    @$el.find("textarea.code").trigger('autosize.resize')    
+    # @$el.find("textarea.code").autosize()
+    # @$el.find("textarea.code").trigger('autosize.resize')
     
     app.postRender()
     @delegateEvents()
@@ -56,13 +56,14 @@ class Editor extends app.views.Form
   save: ->
    try
      params = JSON.parse(@$el.find("textarea[name=meta]").val())
-     params['body'] =  @$el.find("textarea[name=body]").val()
+     params.body =  @$el.find("textarea[name=body]").val()
    catch error
      return app.flash "Malformed JSON: #{error}", "bg-red white"
      
    if typeof(params) is "string"
      return app.flash "Malformed JSON", "bg-red white"
      
+   console.log params   
    @model.save(params, {wait: true, success: onSave, error: onError})
    @
 

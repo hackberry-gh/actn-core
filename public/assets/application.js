@@ -7348,8 +7348,6 @@ String.prototype.ordinalize = function()
         autoIndent: true,
         fence: true
       });
-      this.$el.find(".code").autosize();
-      this.$el.find(".code").trigger('autosize.resize');
       app.postRender();
       this.delegateEvents();
       return this;
@@ -7512,8 +7510,6 @@ String.prototype.ordinalize = function()
         autoIndent: true,
         fence: true
       });
-      this.$el.find("textarea.code").autosize();
-      this.$el.find("textarea.code").trigger('autosize.resize');
       app.postRender();
       this.delegateEvents();
       return this;
@@ -7523,7 +7519,7 @@ String.prototype.ordinalize = function()
       var error, params;
       try {
         params = JSON.parse(this.$el.find("textarea[name=meta]").val());
-        params['body'] = this.$el.find("textarea[name=body]").val();
+        params.body = this.$el.find("textarea[name=body]").val();
       } catch (_error) {
         error = _error;
         return app.flash("Malformed JSON: " + error, "bg-red white");
@@ -7531,6 +7527,7 @@ String.prototype.ordinalize = function()
       if (typeof params === "string") {
         return app.flash("Malformed JSON", "bg-red white");
       }
+      console.log(params);
       this.model.save(params, {
         wait: true,
         success: onSave,

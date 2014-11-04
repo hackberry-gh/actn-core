@@ -11,9 +11,9 @@ GIT
 
 GIT
   remote: https://github.com/hackberry-gh/actn-db
-  revision: c5d02a297db828163caa640120f72d5b383b02e8
+  revision: cb1de0c32602d7787d568850245d2b24cf4802a5
   specs:
-    actn-db (0.0.6)
+    actn-db (0.0.7)
       activemodel
       bcrypt
       coffee-script
@@ -101,7 +101,7 @@ GEM
     log4r (1.1.10)
     minitest (5.4.2)
     multi_json (1.10.1)
-    oj (2.10.4)
+    oj (2.11.0)
     pg (0.17.1)
     rack (1.5.2)
     rack-accept-media-types (0.9)

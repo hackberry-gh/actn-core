@@ -49,7 +49,68 @@ namespace :assets do
   end
 end
 
-# User.create(first_name: "onur", last_name: "uyar", email: "me@onuruyar.com", password: "password", password_confirmation: "password")
+def seed
+  client = Client.create(Oj.load('
+  {
+    "domain": "dev.lvh.me",
+    "acl": {
+      "allow": [
+        "*"
+      ],
+      "disallow": []
+    }
+  }
+  '))
+  creds = client.credentials
+
+  Model.create(Oj.load('
+  {
+    "name": "Supporter",
+   "table_schema": "public",
+    "schema": {
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email"
+        }
+     },
+     "type": "object"
+   },
+
+    "hooks": {
+     "after_create": [
+      {
+       "name": "WebHook",
+       "url": "http://dev.api.lvh.me:6000/clones",
+       "head": {
+        "X-Apikey": "' + creds["apikey"] + '",
+        "X-Secret": "' + creds["secret"] + '"
+       }
+      }
+     ]
+   }
+  }
+  '))
+
+  Model.create(Oj.load('
+  {
+    "name": "Clone",
+  	"table_schema": "public",	
+    "schema": {
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email"
+        }
+      },
+      "type": "object"
+    }
+  }
+  '))
+
+  User.create(first_name: "demo", last_name: "demo", email: "demo@actn.io", password: "password", password_confirmation: "password")
+end
+
 
 def bas
 # sets=%W(supporters conductors pilots idiots)

@@ -1,4 +1,4 @@
-<div class="shrink">
+<div class="form-container">
   <header class="z4 bg-dark-gray full-width">
     <nav>
       <a class="close button button-narrow button-nav-dark m1"><i class="fa fa-times fa-lg"></i></a>      
@@ -14,13 +14,9 @@
     
   </header>  
   
-  <form class="{{name}} shrink overflow-auto">    
-    <div class="table">
-      <div class="table-row">
-        <textarea disabled name="body" class="p2 field-dark table-cell full-width code" spellcheck="false">{{attributes.body}}</textarea>                
-        <textarea disabled name="meta" class="p2 field-dark table-cell full-width code hidden" spellcheck="false">{{meta}}</textarea>
-      </div>
-    </div>
+  <form class="{{name}}" >    
+    <textarea disabled name="body" class="p2 field-dark table-cell full-width code" spellcheck="false">{{attributes.body}}</textarea>                
+    <textarea disabled name="meta" class="p2 field-dark table-cell full-width code hidden" spellcheck="false">{{meta}}</textarea>
   </form>
   
 

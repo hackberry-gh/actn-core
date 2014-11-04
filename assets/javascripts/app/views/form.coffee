@@ -52,8 +52,8 @@ class Form extends Backbone.View
       autoIndent: true
       fence: true
     )
-    @$el.find(".code").autosize()
-    @$el.find(".code").trigger('autosize.resize')
+    # @$el.find(".code").autosize()
+    # @$el.find(".code").trigger('autosize.resize')
     
     app.postRender()
     @delegateEvents()
