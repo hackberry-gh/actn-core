@@ -22,6 +22,7 @@ class Flash extends Backbone.View
     @$el.html @template(@options?.data,@options?.partials)  
     # @$el.addClass "bg-#{@options.color}"
     app.$body.prepend @$el
+    @$el.css({"z-index": 4 + $(".flash").length})
     app.postRender()
     
 app.views.Flash = Flash    

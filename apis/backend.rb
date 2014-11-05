@@ -20,7 +20,7 @@ class Backend < Actn::Api::Core
   helpers do
     
     def set
-      env['set'] ||= Actn::DB::Set.new(table_schema, params[:set])
+      env['set'] ||= Actn::DB::Set.new(schema, params[:set])
     end
     
     def model
@@ -31,8 +31,9 @@ class Backend < Actn::Api::Core
       env['name'] ||= params[:set].singularize
     end
     
-    def table_schema
-      env['table_schema'] ||= (query['table_schema'] || :core)
+    def schema
+      # env['schema'] ||= (query['schema'] || :core)
+      params[:schema]
     end
     
     def criteria
@@ -123,7 +124,7 @@ class Backend < Actn::Api::Core
     authenticate!
   end
 
-  get "/:set" do
+  get "/:schema/:set" do
     begin
       # puts criteria.inspect
       if query['stream']
@@ -148,7 +149,7 @@ class Backend < Actn::Api::Core
     end
   end
 
-  get "/:set/:uuid" do
+  get "/:schema/:set/:uuid" do
     begin
       set.find(params[:uuid])
     rescue PG::Error => e
@@ -157,7 +158,7 @@ class Backend < Actn::Api::Core
     end
   end  
 
-  post "/:set" do
+  post "/:schema/:set" do
     begin
       created = model.create(data)
       if created.persisted?
@@ -172,28 +173,31 @@ class Backend < Actn::Api::Core
     end
   end    
 
-  put "/:set/:uuid" do
+  put "/:schema/:set/:uuid" do
     begin
-      puts "UPDATING DATA #{data}"
       unless record.update(data)
         status 406
         record.errors.to_json      
       else
-        puts "UPDATED RECORD #{record.inspect}"
         record.to_json
       end
+    rescue NameError => e
+      set.validate_and_upsert(data.merge("uuid" => params[:uuid]))  
     rescue PG::Error => e
       status 400
       e.result.error_field( PG::Result::PG_DIAG_MESSAGE_PRIMARY )
     end
   end      
 
-  delete "/:set/:uuid" do
+  delete "/:schema/:set/:uuid" do
     begin
       record.destroy.to_json
+    rescue NameError => e
+      set.delete(uuid: params[:uuid])  
     rescue PG::Error => e
       status 400
       e.result.error_field( PG::Result::PG_DIAG_MESSAGE_PRIMARY )
     end
   end
+  
 end

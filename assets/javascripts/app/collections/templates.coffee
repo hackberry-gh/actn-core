@@ -3,7 +3,8 @@
 class Templates extends Backbone.Collection
   name: "templates"
   model: app.models.Template
-  url: "/api/templates"
+  url: "/api/core/templates"
   query: {select: ["uuid,filename"]}
+  comparator: "filename"
 
 app.collections.Templates = Templates

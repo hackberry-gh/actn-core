@@ -55,8 +55,7 @@ Router = Backbone.Router.extend(
     app.view?.list?.form?.remove()    
     renderList(cid) unless app.view?.list?
     app.activeMeniItems = [cid, uuid or "new"]
-    formOrEditor = if cid is "templates" then "Editor" else "Form"
-    app.view.list.form = render formOrEditor , collection: app.collections[cid], model: new app.models[cid.classify().toString()](uuid: uuid)
+    app.view.list.form = render "Form" , collection: app.collections[cid], model: new app.models[cid.classify().toString()](uuid: uuid)
       
   render = (view, options) ->
     view = new app.views[view](options)

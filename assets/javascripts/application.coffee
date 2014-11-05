@@ -7,6 +7,8 @@
 #=require vendor/behave
 #=require vendor/inflections
 #=require vendor/jjv
+#=require vendor/d3.min-3bff8220
+#=require vendor/c3
 
 #=require app
 #=require api

@@ -7,11 +7,7 @@
 
       <div id="searcharea">
         <textarea class="field-dark full-width mb0" placeholder="Search">{
-  "table_name":"supporters",
-  "query":{
-    "select": "COUNT(id)",
-    "distinct":"country"
-  }
+  "table_name": "table_name"
 }</textarea>
       </div>
   
@@ -20,8 +16,8 @@
         <a class="button button-narrow button-nav-dark toggle-search"><i class="fa fa-chevron-up"></i></a>        
         <a class="button button-narrow button-nav-dark help"><i class="fa fa-question"></i></a>
         <a class="button button-narrow button-nav-dark tbl"><i class="fa fa-list-alt"></i></a>        
-        <a class="button button-narrow button-nav-dark d3" data-chart="Pie"><i class="fa fa-pie-chart"></i></a>        
-        <!-- <a class="button button-narrow button-nav-dark d3" data-chart="Bar"><i class="fa fa-bar-chart"></i></a> -->
+        <a class="button button-narrow button-nav-dark d3" data-ns="C3" data-name="Pie"><i class="fa fa-pie-chart"></i></a>        
+        <a class="button button-narrow button-nav-dark d3" data-ns="C3" data-name="Line"><i class="fa fa-line-chart"></i></a>
         <span class="inline-block button button-small white yellow h4 rounded record_count">0 records</span>
       </div>
       

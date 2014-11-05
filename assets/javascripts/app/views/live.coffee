@@ -1,5 +1,6 @@
 #= require ../../vendor/stream_table
 #= require ./page
+#= require ./c3/line_live
 
 class Live extends app.views.Page
   
@@ -7,12 +8,14 @@ class Live extends app.views.Page
     super
     
     @start() if "WebSocket" of window
-    
 
   events:
     "click .filter" : "filter"
     "click .td-content" : "showContent"    
-
+    "click .delete" : "deleteRecord"
+    "click .edit" : "editRecord"    
+    "click .d3" : "openChart"
+    "click .tbl" : "openTable"    
   
   rowTemplate: (msg, index) =>
     
@@ -61,7 +64,7 @@ class Live extends app.views.Page
         per_page: 10
       callbacks:
         before_add: @updateFields
-        after_add: @updateCount
+        after_add: @updateCountAndChart
                                    
     @$el.find('.table').stream_table(options, [])
     @st = @$el.find('.table').data('st')
@@ -94,8 +97,12 @@ class Live extends app.views.Page
     # console.log e
     # $(".flash").first().css({"left":"#{e.clientX}px","top":"#{e.clientY}px","z-index":$(".flash").length})
   
-  updateCount: (msgs) =>
+  updateCountAndChart: (msgs) =>
     @$el.find(".record_count").text("#{parseInt(@$el.find(".record_count").text()) + msgs.length} records")
+    if app.views.chart?
+      update = _.map( _.groupBy(msgs, (m) -> m.table_name), (arr,table) -> [ table, arr.length ] )
+      update.unshift ["x", new Date()]
+      app.views.chart.flow(update) 
       
   updateFields: (msgs) =>
     unless _.isEmpty(msgs)
@@ -118,10 +125,10 @@ class Live extends app.views.Page
       fname = f.replace("data.","")
       if f.indexOf("data") > -1
         sort_type = if _.isNumber(@buffer[0]['data'][fname]) then "number" else "string"
-        """<th class="#{fname} pointer" data-sort="#{fname}:asc:#{sort_type}">#{fname.titleize()} <i class="fa fa-sort"></i></th>"""
+        """<th class="#{fname} sort" data-sort="#{fname}:asc:#{sort_type}">#{fname.titleize()} <i class="fa fa-sort"></i></th>"""
       else  
         """<th class="#{fname}">#{fname.titleize()}</th>"""
-    )
+    ) + """<th class="actions"></th>"""
     @st.bindSortingEvents()  
   
   createLabels: =>
@@ -139,6 +146,27 @@ class Live extends app.views.Page
       @st.addData @buffer 
       @buffer = []
   
+  deleteRecord: (e) =>
+    e.preventDefault()
+    $a =  $(e.currentTarget)
+    if window.confirm "Are you sure?"
+      app.api.delete("/api/public/#{$a.data('table_name')}/#{$a.data('uuid')}", null, null, ((data) -> $a.parents("tr").remove()), app.showAlertErrors)
+
+  editRecord: (e) =>
+    e.preventDefault()
+    $a =  $(e.currentTarget)
+    if @updatingRecord = _.findWhere(@st.data,(r) -> r.table_name is $a.data('table_name') and r.data.uuid is $a.data('uuid') )
+      jsonForm = new app.views.JsonForm(table_name: @updatingRecord.table_name, model: new Backbone.Model(@updatingRecord.data))
+      jsonForm.save = @updateRecord
+      app.flash """<h4>Editing /#{$a.data('table_name')}/#{$a.data('uuid')}</h4>""", "record-editor bg-dark-gray white"
+      jsonForm.render().$el.insertAfter $(".record-editor h4")
+      jsonForm.$el.find("textarea").removeAttr("disabled")
+
+      
+  updateRecord: (params) =>
+    if params
+      app.api.put("/api/public/#{@updatingRecord.table_name}/#{@updatingRecord.data.uuid}", params, null, ((data) -> $('.record-editor').find(".close").click()), app.showAlertErrors)  
+          
   process: (evt) =>
 
     msg = if _.isString(evt.data) then JSON.parse(evt.data) else evt.data      
@@ -153,5 +181,19 @@ class Live extends app.views.Page
       # @st.addData [msg]
     else
       $("tr.#{msg.data.uuid}").remove()  
+  
+  openTable: ->
+    app.views.chart?.remove()    
+    @$el.find(".table, .st_pagination").removeClass("hidden")
+  
+  openChart: (e) ->
+    e.preventDefault()
+    ns = $(e.currentTarget).data('ns')
+    name = $(e.currentTarget).data('name')    
+    app.views.chart?.remove()
+    app.views.chart = new app.views[ns][name](data: [])
+    @$el.find(".table, .st_pagination").addClass("hidden")
+    @$el.find(".table-container").append(app.views.chart.$el)    
+    app.views.chart.draw()
     
 app.views.Live = Live

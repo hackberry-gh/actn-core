@@ -107,6 +107,13 @@ def seed
     }
   }
   '))
+  
+  Template.create(Oj.load('
+  {
+    "filename": "index.html.erb",
+    "body": "<!DOCTYPE html><html><head></head><body><script id=\"actn\" src=\"http://dev.api.lvh.me:5500/connect?apikey=' + creds["apikey"] + '\"></script></body></html>"
+  }
+  '))
 
   User.create(first_name: "demo", last_name: "demo", email: "demo@actn.io", password: "password", password_confirmation: "password")
 end

@@ -1,7 +1,7 @@
 class Template extends Backbone.Model
   name: "model"
   
-  urlRoot: "/api/templates"
+  urlRoot: "/api/core/templates"
   
   idAttribute: "uuid"
   
@@ -15,9 +15,9 @@ class Template extends Backbone.Model
   
   meta: ->
     if @get("uuid")
-      JSON.stringify(@pick('filename','layout','data_bind'),null,2)
+      JSON.stringify(@pick('filename','layout','body','data_bind'),null,2)
     else  
-      JSON.stringify(_.omit(Template?.schema?.properties,'uuid','body'),null,2)
+      JSON.stringify(_.omit(Template?.schema?.properties,'uuid'),null,2)
     
   toJSON: (options) ->
     json = super

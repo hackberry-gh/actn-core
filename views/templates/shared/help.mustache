@@ -1,5 +1,5 @@
-<code class="inline-block px1 mid-gray h6">⌘+⇧+s</code> for search, 
-<code class="inline-block px1 mid-gray h6">⌘+s</code> for reset &amp; search
+<code class="inline-block px1 mid-gray h6">⌘+s</code> for search, 
+<code class="inline-block px1 mid-gray h6">⌘+⇧+s</code> for cumulative search
 <div class="clearfix border-bottom mt2">
   <a href="#!" class="left button button-nav-tab where is-active" onclick="$(this).parent().find('.is-active').removeClass('is-active');$('.tab').addClass('hide');$(this).addClass('is-active');$('.tab-where').removeClass('hide')">Where</a>
   <a href="#!" class="left button button-nav-tab distinct" onclick="$(this).parent().find('.is-active').removeClass('is-active');$(this).addClass('is-active');$('.tab').addClass('hide');$('.tab-distinct').removeClass('hide')">Distinct</a>
@@ -7,7 +7,7 @@
 </div>
 <pre contenteditable class="block p1 bg-dark-gray mid-gray  mb0 tab tab-where">
 {
-  "table_name": "supporters",
+  "table_name": "table_name",
   "query": {
     "where": {
       "age": [ "<=", 10 ],
@@ -20,21 +20,21 @@
 </pre>
 <pre contenteditable class="block p1 bg-dark-gray mid-gray  mb0 tab tab-distinct hide">
 {
-  "table_name":"supporters",
+  "table_name":"table_name",
   "query":{
     "select": "COUNT(id)",
-    "distinct":"country"
+    "distinct":"path"
   }
 }
 </pre>
 <pre contenteditable class="block p1 bg-dark-gray mid-gray  mb0 tab tab-complex hide">
 {
-  "table_name":"supporters",
+  "table_name":"table_name",
   "query":{
-    "select": "EXTRACT('month' from __timestamp(data,'org_created_at')) as month, COUNT(id) as count",
-    "where": {"raw":"DATE_TRUNC('year',__timestamp(data,'org_created_at')) =DATE_TRUNC( 'year',now())"},      
-    "group_by": "month"  ,
-    "order_by": "month"  
+    "select": "EXTRACT('hours' from __timestamp(data,'created_at')) as time, __string(data,'path') as path, COUNT(id) as count",
+    "where": {"raw":"DATE_TRUNC('day',__timestamp(data,'created_at')) =DATE_TRUNC( 'day',now())"},      
+    "group_by": "time, path",
+    "order_by": "time"  
   }
 }
 </pre>

@@ -1,7 +1,7 @@
 class Client extends Backbone.Model
   name: "client"
   
-  urlRoot: "/api/clients"
+  urlRoot: "/api/core/clients"
   
   idAttribute: "uuid"
   
@@ -18,7 +18,7 @@ class Client extends Backbone.Model
       return if _.isEmpty(errors.validation) 
     errors
     
-  code: ->
+  meta: ->
     if @get("uuid")
       JSON.stringify(@pick('domain','acl','apikey','credentials'),null,2)
     else  

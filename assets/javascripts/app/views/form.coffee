@@ -1,3 +1,5 @@
+#= require ./json_form
+
 class Form extends Backbone.View
   
   className: "flex flex-5"
@@ -9,7 +11,7 @@ class Form extends Backbone.View
     @listenTo(@model,'invalid',@showValidationErrors)        
     
     app.api.get(
-      "/api/models",
+      "/api/core/models",
       {select: ["schema"], where:{name: @model.constructor.name},limit:1},
       null,
       (data) =>
@@ -41,19 +43,9 @@ class Form extends Backbone.View
     @$container.remove @className
     @$container.append @$el
 
-    @editor = new Behave(
-      textarea: @$el.find(".code")[0],
-      replaceTab: true
-      softTabs: true
-      tabSize: 2
-      autoOpen: true
-      overwrite: true
-      autoStrip: true
-      autoIndent: true
-      fence: true
-    )
-    # @$el.find(".code").autosize()
-    # @$el.find(".code").trigger('autosize.resize')
+    @jsonForm = new app.views.JsonForm(model: @model)
+    @jsonForm.save = @save
+    @jsonForm.render().$el.insertAfter @$el.find("header")
     
     app.postRender()
     @delegateEvents()
@@ -78,16 +70,9 @@ class Form extends Backbone.View
     app.flash "<pre class=\"bg-red white\">#{error_list.join("\n")}</pre>", "bg-red white"
     @
     
-  save: ->
-    try
-      params = JSON.parse(@$el.find("textarea").val())
-    catch error
-      return app.flash "Malformed JSON: #{error}", "bg-red white"
-      
-    if typeof(params) is "string"
-      return app.flash "Malformed JSON", "bg-red white"
-      
-    @model.save(params, {wait: true, success: onSave, error: onError})
+  save: (params) ->
+    if params
+      @model.save(params, {wait: true, success: onSave, error: onError})
     @
     
   destroy: ->   
@@ -98,12 +83,6 @@ class Form extends Backbone.View
     
   closeError: ->
     @$el.find(".errors").addClass("hidden")
-    @
-    
-  onKeyDown: (e) ->
-    if (e.ctrlKey or e.metaKey) and e.keyCode is 83
-      e.preventDefault()
-      @save()
     @
     
   ##

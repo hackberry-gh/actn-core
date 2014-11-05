@@ -219,7 +219,7 @@
 				}, parseInt(options.resizeDelay,10));
 			}
 
-			if ('onpropertychange' in ta) {
+			//if ('onpropertychange' in ta) {
 				if ('oninput' in ta) {
 					// Detects IE9.  IE9 does not fire onpropertychange or oninput for deletions,
 					// so binding to onkeyup to catch most of those occasions.  There is no way that I
@@ -233,10 +233,10 @@
 						}
 					});
 				}
-			} else {
+        //} else {
 				// Modern Browsers
-				$ta.on('input.autosize', adjust);
-			}
+				//$ta.on('input.autosize', adjust);
+        //}
 
 			// Set options.resizeDelay to false if using fixed-width textarea elements.
 			// Uses a timeout and width check to reduce the amount of times adjust needs to be called after window resize.

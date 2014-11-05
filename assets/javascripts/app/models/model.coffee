@@ -1,7 +1,7 @@
 class Model extends Backbone.Model
   name: "model"
   
-  urlRoot: "/api/models"
+  urlRoot: "/api/core/models"
   
   idAttribute: "uuid"
     
@@ -12,7 +12,7 @@ class Model extends Backbone.Model
       return if _.isEmpty(errors.validation) 
     errors    
   
-  code: ->
+  meta: ->
     if @get("uuid")
       JSON.stringify(@pick('name','schema','indexes','hooks'),null,2)
     else  

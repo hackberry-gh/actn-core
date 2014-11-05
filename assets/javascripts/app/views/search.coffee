@@ -1,8 +1,6 @@
 #= require ../../vendor/stream_table
 #= require ./live
-#= require ./d3/pie
-#= require ./d3/histogram
-#= require ./d3/bar
+#= require ./json_form
 
 class Search extends app.views.Live
   
@@ -14,6 +12,8 @@ class Search extends app.views.Live
     "click .d3" : "openChart"
     "click .tbl" : "openTable"
     "click .toggle-search": "toggleSearch"
+    "click .delete" : "deleteRecord"
+    "click .edit" : "editRecord"    
   
   initialize: (@options=null) ->
     super
@@ -42,7 +42,7 @@ class Search extends app.views.Live
         per_page: 10
       callbacks:
         before_add: @updateFields
-        after_add: @updateCount
+        after_add: @updateCountAndChart
                                    
     @$el.find('.table').stream_table(options, [])
     @$el.find('#searchbox').attr('placeholder','Filter')
@@ -96,10 +96,10 @@ class Search extends app.views.Live
     
       try
         @query = JSON.parse(query)
+        schema = @query?.schema || "public"        
         @query.query ?= {}
-        @query.query.table_schema ?= "public"
         @query.query.stream = "true"    
-        app.api.getStream("/api/#{@query.table_name}",@query.query,null,@onSearchResult,@onError)        
+        app.api.getStream("/api/#{schema}/#{@query.table_name}",@query.query,null,@onSearchResult,@onError)        
       catch error
         app.flash error, "red"
         
@@ -128,6 +128,7 @@ class Search extends app.views.Live
     $(e.currentTarget).find(".fa").toggleClass("fa-flip-vertical")
     app.views.chart?.resize()
     
+    
   openTable: ->
     app.views.chart?.remove()    
     @$el.find(".table, .st_pagination").removeClass("hidden")
@@ -135,9 +136,10 @@ class Search extends app.views.Live
   openChart: (e) ->
     e.preventDefault()
     return if _.isEmpty(@st.data)
-    chart = $(e.currentTarget).data('chart')
+    ns = $(e.currentTarget).data('ns')
+    name = $(e.currentTarget).data('name')    
     app.views.chart?.remove()
-    app.views.chart = new app.views[chart](data: @st.data)
+    app.views.chart = new app.views[ns][name](data: @st.data)
     @$el.find(".table, .st_pagination").addClass("hidden")
     @$el.find(".table-container").append(app.views.chart.$el)
         

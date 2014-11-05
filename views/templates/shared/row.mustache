@@ -4,4 +4,8 @@
   {{#values}}
   <td><span class="td-content">{{.}}</span></td>
   {{/values}}
+  <td class="actions nowrap">
+    <a data-table_name="{{msg.table_name}}" data-uuid="{{msg.data.uuid}}" class="button button-small edit" href="#!"><i class="fa fa-pencil-square-o"></i></a>
+    <a data-table_name="{{msg.table_name}}" data-uuid="{{msg.data.uuid}}" class="button button-small red delete" href="#!"><i class="fa fa-times"></i></a>
+  </td>
 </tr>

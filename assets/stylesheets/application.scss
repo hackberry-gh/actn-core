@@ -1,3 +1,5 @@
+//= require ./c3
+
 @import "fontawesome/scss/font-awesome";
 
 @font-face {
@@ -135,7 +137,7 @@ html, body, #main, .page, .flex-container, .flex{
 .flash{
   @extend .bold; 
   @extend .p2; 
-  @extend .bg-white;
+//  @extend .bg-white;
   @extend .dark-gray;
   @extend .rounded;
   @extend .clearfix;  
@@ -163,7 +165,7 @@ html, body, #main, .page, .flex-container, .flex{
   display: flex;   
   flex-flow: column;
   height:100%;
-  form{
+  .textareas{
     flex:20 20 0;
     display:flex;
   }
@@ -175,7 +177,7 @@ html, body, #main, .page, .flex-container, .flex{
 .code{
   outline:none;
   resize: none;  
-  font-family: 'Source Code Pro', Consolas, monospace;
+  font-family: 'Andale Mono', Consolas, monospace;
   border: none;
   &:focus{border: none;}
   &[disabled]{
@@ -183,9 +185,10 @@ html, body, #main, .page, .flex-container, .flex{
     border: none;  
     background-color: #fff !important;
   }
-//  margin-bottom:3.5rem;
+  min-height:200px;
   @extend .light-gray;
 }
+
 
 .tabs.dark{
   border-bottom-color: rgba(0, 0, 0, 0.25);
@@ -223,6 +226,7 @@ html, body, #main, .page, .flex-container, .flex{
 .table-light th{
   white-space: nowrap;
 }
+th.sort{cursor: pointer;}
 
 .st_pagination{
   @extend .center;
@@ -282,11 +286,12 @@ html, body, #main, .page, .flex-container, .flex{
 }
 
 
-svg {
-  .pie-span{
-    font-family: 'Source Code Pro', Consolas, monospace;
-  }
-  .tright .pie-span{
-    text-align:right;
-  }
-}
+//svg {
+//  overflow:hidden;
+//  .pie-span{
+//    font-family: 'Andale Mono', Consolas, monospace;
+//  }
+//  .tright .pie-span{
+//    text-align:right;
+//  }
+//}

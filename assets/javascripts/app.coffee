@@ -55,6 +55,7 @@ class App
         $(".flex-#{n} .sidebar-nav a.#{className}").addClass "is-active"
 
   flash: (content, classNames="", timeout = null) ->
+    classNames = "bg-white #{classNames}" if classNames.indexOf("bg-") is -1
     new app.views.Flash({data: {content: content, classNames: classNames}, timeout: timeout})     
 
     
@@ -69,10 +70,9 @@ class App
       when 401
         messages.push """You need to <a href="/signin">singin</a> before"""
       else
-        elems.push app.constructor.STANDARD_ERR
-        console.log errors
+        messages.push app.constructor.STANDARD_ERR
     
-    @flash elems.join('<br/>'), "red"    
+    app.flash messages.join('<br/>'), "red"    
   
   showInlineErrors: ($form, xhr) ->
     errors = JSON.parse(xhr.responseText).data
@@ -91,7 +91,6 @@ class App
         $error.insertAfter $form.find("input[type=email]").addClass("is-error")
       else
         app.flash app.constructor.STANDARD_ERR, "bg-red white"
-        console.log errors
     
   ##
   # private
