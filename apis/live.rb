@@ -39,7 +39,7 @@ class Live < Goliath::WebSocket
   private
   
   def auth!
-    !! ( (env['HTTP_ORIGIN'] || "").to_domain == ENV['APP'] || ( env['SERVER_IP'] == env['HTTP_HOST'].split(":")[0] ) )
+    !! ( (env['HTTP_ORIGIN'] || "").to_domain == ENV['APP_NAME'] || ( env['SERVER_IP'] == env['HTTP_HOST'].split(":")[0] ) )
   end 
   
 end
