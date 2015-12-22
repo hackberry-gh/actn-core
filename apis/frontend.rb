@@ -13,11 +13,6 @@ class Frontend < Actn::Api::Core
     use Rack::Static, :root => "#{Actn::Api.root}/public", :urls => ['favicon.ico','/assets']
   end
 
-  use Rack::Csrf, skip_if: proc { |request| 
-    puts request.inspect
-    true
-  }
-        
   helpers do
 
     def current_user

@@ -99,7 +99,7 @@ class Api
         params.after(xhr) if isFunc params.after
     
   setCsrf = (xhr) ->
-    xhr.setRequestHeader "X_CSRF_TOKEN", $("meta[name=\"_csrf\"]").attr("content")
+    xhr.setRequestHeader "X-CSRF-Token", $("meta[name=\"_csrf\"]").attr("content")
   
   isFunc = (obj) ->
     typeof obj is "function"
