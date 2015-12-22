@@ -2,34 +2,6 @@ require 'actn/api/core'
 require 'tilt/erb' 
 require "goliath/rack/sprockets"
 
-module Actn
-  module Api
-    class Core < Helmet::API
-  
-      OK = '{"success": true}'
-      
-      def self.inherited base
-
-        base.init
-        
-        super
-
-        base.use Goliath::Rack::Params
-        base.use Goliath::Rack::Heartbeat
-
-        # base.use Mw::NoXSS
-        base.use Rack::Session::Cookie, secret: ENV['SECRET']
-        # base.use Rack::Csrf, skip_if: proc { |request|
-        #   request.env.key?('HTTP_X_APIKEY') && request.env.key?('HTTP_X_SECRET')
-        # }
-        
-      end
-          
-    end
-
-  end
-end
-
 class Frontend < Actn::Api::Core
   
   settings[:public_folder]  = "#{Actn::Api.root}/public"
@@ -40,7 +12,12 @@ class Frontend < Actn::Api::Core
   else  
     use Rack::Static, :root => "#{Actn::Api.root}/public", :urls => ['favicon.ico','/assets']
   end
-      
+
+  use Rack::Csrf, skip_if: proc { |request| 
+    puts request.inspect
+    true
+  }
+        
   helpers do
 
     def current_user
