@@ -12902,7 +12902,7 @@ return i==js.length?[t.year,Yi(n.map(function(n){return n/31536e6}),e)[2]]:i?t[u
     };
 
     setCsrf = function(xhr) {
-      return xhr.setRequestHeader("X_CSRF_TOKEN", $("meta[name=\"_csrf\"]").attr("content"));
+      return xhr.setRequestHeader("X-CSRF-Token", $("meta[name=\"_csrf\"]").attr("content"));
     };
 
     isFunc = function(obj) {

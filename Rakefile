@@ -42,8 +42,10 @@ namespace :assets do
       if File.file?(asset)
         dir = File.dirname(asset)
         base = File.basename(asset).split("-")[0..-2].join("-")
-        ext = asset.split("/").last.to_s.split(".",2).last
-        `mv #{asset} #{dir}/#{base}.#{ext}`
+        if !base.empty? && !base.nil?
+          ext = asset.split("/").last.to_s.split(".",2).last
+          `mv #{asset} #{dir}/#{base}.#{ext}`
+        end
       end
     end
   end
