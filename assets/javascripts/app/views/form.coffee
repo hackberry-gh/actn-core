@@ -7,8 +7,8 @@ class Form extends Backbone.View
   initialize: (@options=null) ->
     super
     @listenTo(@model,'change',@render)
-    @listenTo(@model,'destroy',@close)    
-    @listenTo(@model,'invalid',@showValidationErrors)        
+    @listenTo(@model,'destroy',@close)
+    @listenTo(@model,'invalid',@showValidationErrors)
     
     app.api.get(
       "/api/core/models",
@@ -28,7 +28,7 @@ class Form extends Backbone.View
   events: 
     "click .close": "close"
     "click .edit": "edit"
-    "click .save": "save"
+    "click .save": () -> @save(@jsonForm.value())
     "click .destroy": "destroy"
     "click .error-close": "closeError"
     "keydown textarea": "onKeyDown"
