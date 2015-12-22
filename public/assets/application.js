@@ -13984,9 +13984,12 @@ return i==js.length?[t.year,Yi(n.map(function(n){return n/31536e6}),e)[2]]:i?t[u
     Form.prototype.events = {
       "click .close": "close",
       "click .edit": "edit",
-      "click .save": "save",
+      "click .save": function() {
+        return this.save(this.jsonForm.value());
+      },
       "click .destroy": "destroy",
       "click .error-close": "closeError",
+      "click .help": "toggleHelp",
       "keydown textarea": "onKeyDown"
     };
 
@@ -14064,6 +14067,10 @@ return i==js.length?[t.year,Yi(n.map(function(n){return n/31536e6}),e)[2]]:i?t[u
     Form.prototype.closeError = function() {
       this.$el.find(".errors").addClass("hidden");
       return this;
+    };
+
+    Form.prototype.toggleHelp = function() {
+      return app.flash(app.getTemplate('help_form')({}, []));
     };
 
     onSave = function(model) {

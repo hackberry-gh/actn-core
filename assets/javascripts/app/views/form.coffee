@@ -31,6 +31,7 @@ class Form extends Backbone.View
     "click .save": () -> @save(@jsonForm.value())
     "click .destroy": "destroy"
     "click .error-close": "closeError"
+    "click .help" : "toggleHelp"
     "keydown textarea": "onKeyDown"
   
   template: (data, partials = {}) ->
@@ -84,6 +85,9 @@ class Form extends Backbone.View
   closeError: ->
     @$el.find(".errors").addClass("hidden")
     @
+
+  toggleHelp: ->
+    app.flash app.getTemplate('help_form')({}, [])
     
   ##
   # private
